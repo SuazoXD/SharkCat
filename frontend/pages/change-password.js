@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import styles from '../pages/styles/change-password.module.css';
 
 export default function ChangePassword() {
   const [userId, setUserId] = useState('');
@@ -21,33 +22,43 @@ export default function ChangePassword() {
   };
 
   return (
-    <div>
-      <h1>Cambiar Contraseña</h1>
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="text" 
-          placeholder="ID de Usuario" 
-          value={userId} 
-          onChange={(e) => setUserId(e.target.value)} 
-          required 
-        />
-        <input 
-          type="password" 
-          placeholder="Contraseña Antigua" 
-          value={oldPassword} 
-          onChange={(e) => setOldPassword(e.target.value)} 
-          required 
-        />
-        <input 
-          type="password" 
-          placeholder="Nueva Contraseña" 
-          value={newPassword} 
-          onChange={(e) => setNewPassword(e.target.value)} 
-          required 
-        />
-        <button type="submit">Actualizar Contraseña</button>
-      </form>
-      {message && <p>{message}</p>}
+    <div className={styles.container}>
+      <div className={styles.passwordBox}>
+        <h1 className={styles.sharkCatTitle}>SharkCat</h1>
+        <a href="/" className={styles.homeButton}>
+          <img src="/images/home-icon.png" alt="Home" className={styles.homeIcon} />
+        </a>
+        <img src="/images/Contraseina.png" alt="SharkCat Logo" className={styles.logoImage} />
+        <h1 className={styles.title}>Cambiar Contraseña</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input 
+            type="text" 
+            placeholder="ID de Usuario" 
+            value={userId} 
+            onChange={(e) => setUserId(e.target.value)} 
+            required 
+            className={styles.input}
+          />
+          <input 
+            type="password" 
+            placeholder="Contraseña Antigua" 
+            value={oldPassword} 
+            onChange={(e) => setOldPassword(e.target.value)} 
+            required 
+            className={styles.input}
+          />
+          <input 
+            type="password" 
+            placeholder="Nueva Contraseña" 
+            value={newPassword} 
+            onChange={(e) => setNewPassword(e.target.value)} 
+            required 
+            className={styles.input}
+          />
+          <button type="submit" className={styles.button}>Actualizar Contraseña</button>
+        </form>
+        {message && <p className={styles.message}>{message}</p>}
+      </div>
     </div>
   );
 }
