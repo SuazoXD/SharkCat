@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap');
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #AEEAC8;
+  text-align: center;
+}
+
+.sharkCatTitle {
+  font-family: 'Protest Strike', sans-serif;
+  font-size: 3.5rem;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.underConstruction {
+  color: rgb(255, 0, 0);
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  background-color: #0070f3;
+  color: white;
+  font-size: 1.25rem;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #005bb5;
+}
