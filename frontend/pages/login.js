@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/router'; // Importa useRouter para manejar redirecciones
 import styles from '../pages/styles/login.module.css';
 
 export default function Login() {
@@ -8,6 +9,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
   const [savePassword, setSavePassword] = useState(false); // Estado para guardar la contraseña
   const [message, setMessage] = useState('');
+  const router = useRouter(); // Inicializa useRouter para redirecciones
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +18,12 @@ export default function Login() {
         correo: email,
         password: password
       });
-      setMessage('Login exitoso. ID de usuario: ' + response.data.idUsuario);
+
+      // Guarda el ID del usuario en localStorage para usarlo en otras páginas
+      localStorage.setItem('userId', response.data.idUsuario);
+
+      // Redirige a la página de UserHome
+      router.push('/UserHome');
     } catch (error) {
       setMessage('Error de inicio de sesión. Verifica tus credenciales.');
     }

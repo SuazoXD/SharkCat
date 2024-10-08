@@ -1,0 +1,44 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #AEEA00; /* Verde limón */
+    padding: 1rem;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .brand {
+    font-family: 'Protest Strike', sans-serif;
+    font-size: 1.5rem;
+    color: white;
+    margin-left: 1rem;
+  }
+  
+  .menu {
+    display: flex;
+    align-items: center;
+  }
+  
+  .welcome {
+    margin-right: 2rem;
+    font-size: 1.2rem;
+    color: white;
+  }
+  
+  .profileButton {
+    background-color: #0070f3;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .profileButton:hover {
+    background-color: #005bb5;
+  }
+  
