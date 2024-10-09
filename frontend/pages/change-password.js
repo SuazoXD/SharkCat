@@ -1,17 +1,22 @@
-import { useState } from 'react'; 
+import { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import styles from '../pages/styles/change-password.module.css';
 
 export default function ChangePassword() {
-  const [userId, setUserId] = useState('');
+  const [userId, setUserId] = useState(''); // Eliminamos el campo de ID de usuario
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState(''); // Campo de confirmación de contraseña
   const [message, setMessage] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false); // Mostrar/ocultar nueva contraseña
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Mostrar/ocultar confirmación
-
   const [showPopup, setShowPopup] = useState(false); // Estado para controlar el pop-up
+
+  // Usar el useEffect para obtener el userId desde localStorage
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    setUserId(storedUserId);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,14 +55,6 @@ export default function ChangePassword() {
         <img src="/images/Contraseina.png" alt="SharkCat Logo" className={styles.logoImage} />
         <h1 className={styles.title}>Cambiar Contraseña</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
-          <input 
-            type="text" 
-            placeholder="ID de Usuario" 
-            value={userId} 
-            onChange={(e) => setUserId(e.target.value)} 
-            required 
-            className={styles.input}
-          />
           <input 
             type="password" 
             placeholder="Contraseña Antigua" 
