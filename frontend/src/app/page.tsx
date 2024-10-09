@@ -25,9 +25,6 @@ export default function Home() {
         <Link href="/register" className={styles.button}>
           Ir a Registro
         </Link>
-        <Link href="/change-password" className={styles.button}>
-          Ir a Cambio de Contraseña
-        </Link>
       </div>
     </div>
   );

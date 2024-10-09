@@ -16,8 +16,8 @@ export default function NavBar({ userId }) {
       </div>
       <div className={styles.menu}>
         {userId && <span className={styles.welcome}>Bienvenido, ID: {userId}</span>}
-        <Link href="/profile" className={styles.profileButton}>
-          Profile
+        <Link href="http://localhost:3001/change-password" className={styles.profileButton}>
+          Cambiar contraseña
         </Link>
       </div>
     </nav>

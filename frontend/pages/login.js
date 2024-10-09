@@ -9,6 +9,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
   const [savePassword, setSavePassword] = useState(false); // Estado para guardar la contraseña
   const [message, setMessage] = useState('');
+  const [showPopup, setShowPopup] = useState(false); // Estado para controlar el pop-up
   const router = useRouter(); // Inicializa useRouter para redirecciones
 
   const handleSubmit = async (e) => {
@@ -19,14 +20,28 @@ export default function Login() {
         password: password
       });
 
-      // Guarda el ID del usuario en localStorage para usarlo en otras páginas
-      localStorage.setItem('userId', response.data.idUsuario);
+      // Si la respuesta es exitosa, redirigir a UserHome
+      if (response.status === 200) {
+        setMessage('Inicio de sesión exitoso.');
+        setShowPopup(true); // Mostrar el pop-up con el mensaje de éxito
 
-      // Redirige a la página de UserHome
-      router.push('/UserHome');
+        // Redirige después de 3 segundos
+        setTimeout(() => {
+          router.push('/UserHome');
+        }, 3000);
+      } else {
+        setMessage('Error de inicio de sesión. Verifica tus credenciales.');
+        setShowPopup(true); // Mostrar el pop-up con el mensaje de error
+      }
     } catch (error) {
+      // Si hay un error (como credenciales incorrectas), mostrar un mensaje de error
       setMessage('Error de inicio de sesión. Verifica tus credenciales.');
+      setShowPopup(true); // Mostrar el pop-up con el mensaje de error
     }
+  };
+
+  const closePopup = () => {
+    setShowPopup(false); // Ocultar el pop-up cuando se cierre
   };
 
   return (
@@ -37,7 +52,6 @@ export default function Login() {
           <img src="/images/home-icon.png" alt="Home" className={styles.homeIcon} />
         </a>
 
-        {/* Cambia la imagen del logo cuando se ingresa una contraseña */}
         <img 
           src={password.length > 0 ? "/images/new-logo.png" : "/images/sharkcat1.png"} 
           alt="Login Image" 
@@ -106,6 +120,16 @@ export default function Login() {
         </form>
         {message && <p className={styles.message}>{message}</p>}
       </div>
+
+      {/* Ventana emergente (pop-up) */}
+      {showPopup && (
+        <div className={styles.popupOverlay}>
+          <div className={styles.popup}>
+            <p>{message}</p>
+            <button onClick={closePopup} className={styles.closeButton}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
