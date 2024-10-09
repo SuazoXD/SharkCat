@@ -1,0 +1,186 @@
+-- Database: postgres
+
+-- DROP DATABASE IF EXISTS postgres;
+
+CREATE DATABASE sharkCatDB;
+-- Tabla: redSocial
+CREATE TABLE redSocial (
+    idRed SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    logo VARCHAR(255),
+    url VARCHAR(255)
+);
+
+-- Tabla: universidades
+CREATE TABLE universidades (
+    idUniversidad SERIAL PRIMARY KEY,
+    nombreUniversidad VARCHAR(255) NOT NULL
+);
+
+-- Tabla: nombres
+CREATE TABLE nombres (
+    idNombre SERIAL PRIMARY KEY,
+    primerNombre VARCHAR(100),
+    segundoNombre VARCHAR(100),
+    primerApellido VARCHAR(100),
+    segundoApellido VARCHAR(100)
+);
+
+-- Tabla: roles
+CREATE TABLE roles (
+    idRol SERIAL PRIMARY KEY,
+    nombreRol VARCHAR(50) NOT NULL
+);
+
+-- Tabla: categorias
+CREATE TABLE categorias (
+    idCategoria SERIAL PRIMARY KEY,
+    nombreCategoria VARCHAR(100) NOT NULL
+);
+
+-- Tabla: metodosPago
+CREATE TABLE metodosPago (
+    id SERIAL PRIMARY KEY,
+    metodoPago VARCHAR(100) NOT NULL
+);
+
+-- Tabla: titulos
+CREATE TABLE titulos (
+    idTitulo SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL
+);
+
+
+
+-- Tabla: InformacionGeneralSharkCat
+CREATE TABLE InformacionGeneralSharkCat (
+    idInformacionGral SERIAL PRIMARY KEY,
+    informacionLegal VARCHAR(255),
+    redesSociales INTEGER REFERENCES redSocial(idRed) ON DELETE SET NULL
+);
+
+-- Tabla: sharkCat
+CREATE TABLE sharkCat (
+    idSC SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    idInformacionGral INTEGER REFERENCES InformacionGeneralSharkCat(idInformacionGral) ON DELETE CASCADE
+);
+
+-- Tabla: cursosEnLaPlataforma
+CREATE TABLE cursosEnLaPlataforma (
+    idCurso SERIAL PRIMARY KEY,
+    nombreCurso VARCHAR(255) NOT NULL,
+    idCategoria INTEGER REFERENCES categorias(idCategoria) ON DELETE SET NULL,
+    imagen BYTEA,
+    descripcion TEXT
+);
+
+
+CREATE TABLE estadoPregunta(
+    idEstadoP SERIAL PRIMARY KEY,
+    estado VARCHAR(45)
+);
+
+-- Tabla: Usuarios
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    idRol INTEGER REFERENCES roles(idRol) ON DELETE SET NULL,
+    idNombre INTEGER REFERENCES nombres(idNombre) ON DELETE CASCADE,
+    edad INTEGER CHECK (edad >= 0),
+    contrasenia VARCHAR(255) NOT NULL,
+    correo VARCHAR(255) NOT NULL UNIQUE,
+    dni VARCHAR(45) UNIQUE,
+    valoracion FLOAT4 CHECK (valoracion >= 0 AND valoracion <= 5),
+    foto_Perfil BYTEA,
+    horarioDiponibleInicio TIME,
+    horarioDisponibleFin TIME
+);
+
+--
+CREATE TABLE preguntas (
+    idPregunta SERIAL PRIMARY KEY,
+    idCategoria INTEGER REFERENCES categorias(idCategoria) ON DELETE SET NULL,
+    idUsuarioPupilo INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    idEstadoP INTEGER REFERENCES estadoPregunta(idEstadoP) ON DELETE SET NULL,
+    titulo VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    fechaPublicacion TIMESTAMP
+);
+
+CREATE TABLE imgPreguta(
+    idImg SERIAL PRIMARY KEY,
+    idPregunta INTEGER REFERENCES preguntas(idPregunta) ON DELETE SET NULL,
+    img BYTEA
+);
+
+
+-- Tabla: historialPreguntas
+CREATE TABLE historialContestadas (
+    idHistorial SERIAL PRIMARY KEY,
+    idPregunta INTEGER REFERENCES preguntas(idPregunta) ON DELETE SET NULL,
+    idUsuarioTutor INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    idUsuarioPupilo INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    fechaContestacion TIMESTAMP,
+    precioAcordado DECIMAL(10,2),
+    valoracion FLOAT4 CHECK (valoracion >= 0 AND valoracion <= 5)
+
+);
+
+-- Tabla: tutoria
+CREATE TABLE tutoria (
+    idTutoria SERIAL PRIMARY KEY,
+    idTutor INTEGER REFERENCES Usuarios(id) ON DELETE CASCADE,
+    idPupilo INTEGER REFERENCES Usuarios(id) ON DELETE CASCADE,
+    curso INTEGER REFERENCES cursosEnLaPlataforma(idCurso) ON DELETE SET NULL,
+    pregunta INTEGER REFERENCES preguntas(idPregunta) ON DELETE SET NULL,
+    fecha DATE NOT NULL,
+    idMetodoPago INTEGER REFERENCES metodosPago(id) ON DELETE SET NULL
+);
+
+-- Tabla: Comentarios
+CREATE TABLE comentarios (
+    idComentario SERIAL PRIMARY KEY,
+    comentario TEXT NOT NULL,
+    idUsuarioDaComentario INTEGER REFERENCES Usuarios(id) ON DELETE CASCADE,
+    idUsuarioRecibeComentario INTEGER REFERENCES Usuarios(id) ON DELETE CASCADE
+);
+
+-- Tabla: administrador
+CREATE TABLE administrador (
+    idAdministrador SERIAL PRIMARY KEY,
+    idNombre INTEGER REFERENCES nombres(idNombre) ON DELETE CASCADE,
+    contrasenia VARCHAR(255) NOT NULL
+);
+
+
+-- Tabla: historialCambiosHechosPorAdmin
+CREATE TABLE historialCambiosHechosPorAdmin (
+    idCambio SERIAL PRIMARY KEY,
+    fecha TIMESTAMP NOT NULL,
+    descripcion TEXT NOT NULL,
+    idAdministrador INTEGER REFERENCES administrador(idAdministrador) ON DELETE CASCADE
+);
+
+-- Tabla: conocimientos
+CREATE TABLE conocimientos (    
+    idConocimientos SERIAL PRIMARY KEY ,
+    idUniversidad INTEGER REFERENCES universidades(idUniversidad) ON DELETE SET NULL,
+    idTitulo INTEGER REFERENCES titulos(idTitulo) ON DELETE SET NULL,
+    idUsuarioTutor INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    fechaEgreso DATE NOT NULL
+);
+
+-- Puestos
+CREATE TABLE puestos(
+    idPuesto SERIAL PRIMARY KEY,
+    puesto VARCHAR(45)
+)
+
+-- Tabla: Experiencia
+CREATE TABLE experiencia (
+    idExperiencia SERIAL PRIMARY KEY,
+    idUsuario INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    idPuesto INTEGER REFERENCES puestos(idPuesto) ON DELETE SET NULL,
+    Empresa VARCHAR(45),
+    descripcion TEXT
+);
