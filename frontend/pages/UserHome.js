@@ -3,12 +3,28 @@ import styles from '../pages/styles/userhome.module.css';
 
 export default function UserHome() {
   const [userId, setUserId] = useState(null);
+  const [userDetails, setUserDetails] = useState({}); // Estado para almacenar los datos del usuario
   const [menuVisible, setMenuVisible] = useState(false); // Estado para mostrar u ocultar el menú de perfil
   const [coursesVisible, setCoursesVisible] = useState(false); // Estado para mostrar u ocultar el menú de cursos
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
     setUserId(storedUserId);
+
+    if (storedUserId) {
+      fetch(`http://localhost:3000/home/${storedUserId}`)
+        .then(response => response.json())
+        .then(data => {
+          // Guardar los datos del usuario (primernombre, segundonombre, primerapellido, segundoapellido)
+          setUserDetails({
+            primernombre: data.primernombre,
+            segundonombre: data.segundonombre,
+            primerapellido: data.primerapellido,
+            segundoapellido: data.segundoapellido,
+          });
+        })
+        .catch(error => console.error('Error al obtener los detalles del usuario:', error));
+    }
   }, []);
 
   const toggleMenu = () => {
@@ -25,7 +41,10 @@ export default function UserHome() {
       <nav className={styles.navbar}>
         <div className={styles.logoSection} onClick={toggleCourses}>
           <img src="/images/logo.png" alt="Logo SharkCat" className={styles.logo} />
-          <span className={styles.username}>Nombre Usuario</span>
+          {/* Mostrar el nombre completo del usuario */}
+          <span className={styles.username}>
+            {`${userDetails.primernombre} ${userDetails.segundonombre} ${userDetails.primerapellido} ${userDetails.segundoapellido}`} (ID: {userId})
+          </span>
         </div>
         <div className={styles.profileSection}>
           <img 
