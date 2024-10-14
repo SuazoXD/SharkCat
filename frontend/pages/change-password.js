@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import styles from '../pages/styles/change-password.module.css';
+import { Html } from 'next/document';
 
 export default function ChangePassword() {
   const [userId, setUserId] = useState(''); // Eliminamos el campo de ID de usuario
