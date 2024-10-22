@@ -1,138 +1,44 @@
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0px; /* Ajuste del padding para eliminar separación superior */
-  height: 60px; /* Puedes ajustar la altura según tus necesidades */
-  background-color: var(--container-bg);
-  color: var(--text-color);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-/* Logo y nombre */
-.logoContainer {
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  margin-right: 10px;
-}
-
-.brandName {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: var(--accent-color);
-}
-
-/* Barra de búsqueda */
-.searchContainer {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.searchInput {
-  width: 100%;
-  max-width: 400px;
-  padding: 10px 10px 10px 40px;
-  border-radius: 8px;
-  border: 1px solid var(--accent-color);
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-size: 1em;
-}
-
-.searchInput::placeholder {
-  color: var(--accent-color);
-}
-
-.searchIcon {
-  position: absolute;
-  left: 10px;
-  cursor: pointer;
-}
-
-/* Botón de búsqueda (oculto por defecto) */
-.searchButton {
-  display: none; /* Oculto en pantallas grandes */
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 14px 20px;
-}
-
-.searchButton:hover {
-  background-color: var(--button-hover-bg);
-  border-radius: 4px;
-}
-
-/* Contenedor de íconos */
-.iconContainer {
-  display: flex;
-  align-items: center;
-}
-
-.iconLink {
-  display: flex;
-  align-items: center;
-  padding: 14px 20px;
-  text-decoration: none;
-  color: var(--text-color);
-}
-
-.iconLink:hover {
-  background-color: var(--button-hover-bg);
-  color: var(--button-text-color);
-  border-radius: 4px;
-}
-
-.icon {
-  cursor: pointer;
-}
-
-/* Botón de perfil */
-.profileButton {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  margin-left: 20px;
-  padding: 14px 20px;
-}
-
-.profileButton:hover {
-  background-color: var(--button-hover-bg);
-  color: var(--button-text-color);
-  border-radius: 4px;
-}
-
-.profileIcon {
-  /* Puedes agregar estilos adicionales si es necesario */
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-  /* Ocultamos la barra de búsqueda por defecto en móviles */
-  .searchContainer {
-    display: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #AEEA00; /* Verde limón */
+    padding: 1rem;
   }
-
-  /* Mostramos el botón de búsqueda en móviles */
-  .searchButton {
-    display: block;
+  
+  .logo {
+    display: flex;
+    align-items: center;
   }
-
-  .iconLink {
-    padding: 10px 15px;
+  
+  .brand {
+    font-family: 'Protest Strike', sans-serif;
+    font-size: 1.5rem;
+    color: white;
+    margin-left: 1rem;
   }
-
-  .brandName {
-    font-size: 1.2em;
+  
+  .menu {
+    display: flex;
+    align-items: center;
   }
-}
+  
+  .welcome {
+    margin-right: 2rem;
+    font-size: 1.2rem;
+    color: white;
+  }
+  
+  .profileButton {
+    background-color: #0070f3;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .profileButton:hover {
+    background-color: #005bb5;
+  }
+  

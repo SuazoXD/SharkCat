@@ -11,9 +11,19 @@
   background-repeat: no-repeat;
   position: relative;
 }
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f78f029c; /* Capa de color blanco */
+  opacity: 0.5; /* Ajusta la opacidad según tu preferencia */
+}
 
 .loginBox {
-  background-color: #BAD4D9;
+  background-color: #0f0b30de;
   padding: 2.5rem;
   border-radius: 16px;
   display: flex;
@@ -33,16 +43,17 @@
   font-size: 3rem;
   margin-bottom: 1rem;
   text-align: center;
-  color: white;
+  color: #f78f02;;
   letter-spacing: 0.1em;
-  margin-top: -30px;
+  margin-top: -15px;
 }
 
 .title {
   font-size: 2rem;
   margin-bottom: 1.5rem;
   text-align: center;
-  margin-top: -30px;
+  margin-top: -15px;
+  color: white;
 }
 
 .form {
@@ -76,13 +87,13 @@
   transform: translateY(-50%);
   background-color: transparent;
   border: none;
-  color: #0070f3;
+  color: #2F2A40;
   cursor: pointer;
   font-size: 0.875rem;
 }
 
 .showPasswordButton:hover {
-  color: #005bb5;
+  color: #f889d6;
 }
 
 .eyeIcon {
@@ -103,12 +114,12 @@
 
 .checkboxLabel {
   font-size: 0.875rem;
-  color: #333;
+  color: white;
 }
 
 .button {
   padding: 0.75rem;
-  background-color: #0070f3;
+  background-color: #f78f02;
   color: white;
   font-size: 1rem;
   border: none;
@@ -120,19 +131,19 @@
 }
 
 .button:hover {
-  background-color: #005bb5;
+  background-color: #815c28;
 }
 
 .forgotPasswordLink {
   display: block;
   margin-top: 1rem;
-  color: #0070f3;
+  color: white;
   text-align: center;
   font-size: 0.875rem;
 }
 
 .forgotPasswordLink:hover {
-  color: #005bb5;
+  color: #f889d6;
 }
 
 .registerContainer {
@@ -141,11 +152,11 @@
 }
 
 .registerLink {
-  color: #0070f3;
+  color: white;
 }
 
 .registerLink:hover {
-  color: #005bb5;
+  color: #f889d6;
 }
 
 /* Logo principal */
@@ -179,7 +190,7 @@
 }
 
 .homeButton:hover {
-  background-color: #005bb5;
+  background-color: #f889d6;
 }
 
 .homeIcon {
@@ -213,7 +224,7 @@
 
 .closeButton {
   padding: 0.75rem 1.5rem;
-  background-color: #0070f3;
+  background-color: #2F2A40;
   color: white;
   font-size: 1rem;
   border: none;
@@ -224,5 +235,17 @@
 }
 
 .closeButton:hover {
-  background-color: #005bb5;
+  background-color: #f889d6;
+}
+#text{
+  text-align: center;
+}
+.errorMessage {
+  color: #f889d6;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.labelPink {
+  color: #f889d6;
 }
