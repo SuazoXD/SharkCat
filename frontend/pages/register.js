@@ -11,13 +11,13 @@ export default function Register() {
     segundoApellido: '',
     correo: '',
     contrasenia: '',
-    confirmarContrasenia: '', // Campo de confirmación de contraseña
+    confirmarContrasenia: '',
     edad: '',
     dni: '',
     telefono: '',
     codigoVerificacion: '',
     idRol: 1,
-    valoracion: 4.5,  // Valor fijo por ahora
+    valoracion: 4.5,
     horarioDiponibleInicio: '09:00:00',
     horarioDisponibleFin: '18:00:00',
   });
@@ -48,6 +48,11 @@ export default function Register() {
     if (!passwordRegex.test(formData.contrasenia)) {
       errors.contrasenia = 'La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un símbolo especial';
     }
+  };
+
+  // Enviar el formulario completo
+  async function handleSubmit(e) {
+    e.preventDefault();
 
     // Validar que las contraseñas coincidan
     if (formData.contrasenia !== formData.confirmarContrasenia) {
@@ -58,7 +63,7 @@ export default function Register() {
 
     // Si no hay errores, retorna true, si hay errores, retorna false
     return Object.keys(errors).length === 0;
-  };
+  }
 
   const handleNextStep = (e) => {
     e.preventDefault();
@@ -82,32 +87,50 @@ export default function Register() {
     const dataToSend = {
       ...formData,
       idRol: Number(formData.idRol),
-      edad: Number(formData.edad),  // Convertir edad a número
+      edad: Number(formData.edad),
     };
 
     try {
-      // Petición POST al backend con los datos completos
       const response = await axios.post('http://localhost:3000/auth/sign-up', dataToSend);
-      setMessage('Registro exitoso. Serás redirigido al login.');
+      setMessage('Registro exitoso. Ahora ingrese el código de verificación.');
       setShowPopup(true);
-      setRedirectToLogin(true); // Cambiamos el estado para redirigir
-
-      // Redirige al login después de 5 segundos
-      setTimeout(() => {
-        router.push('/login');
-      }, 5000); // 5 segundos
+      setStep(4); // Ir al paso de validación del código
     } catch (error) {
       setMessage('Error en el registro. Inténtalo de nuevo.');
       setShowPopup(true);
-      setRedirectToLogin(false); // No redirigir en caso de error
+      setRedirectToLogin(false);
+    }
+  };
+
+  // Validar código de verificación
+  const handleValidateCode = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post('http://localhost:3000/auth/sign-up/verify', {
+        code: formData.codigoVerificacion,
+      });
+
+      if (response.status === 200) {
+        setMessage('Código validado correctamente. Redirigiendo al login...');
+        setShowPopup(true);
+
+        // Redirige al login después de la validación exitosa
+        setTimeout(() => {
+          router.push('/login');
+        }, 3000);
+      } else {
+        setMessage('Código incorrecto. Inténtalo de nuevo.');
+        setShowPopup(true);
+      }
+    } catch (error) {
+      setMessage('Error al validar el código.');
+      setShowPopup(true);
     }
   };
   
   const closePopup = () => {
     setShowPopup(false);
-    if (redirectToLogin) {
-      router.push('/login'); // Redirigir si el registro fue exitoso
-    }
   };
 
   return (
