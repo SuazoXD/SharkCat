@@ -113,7 +113,7 @@
 }
 
 .registerBox {
-  background-color: #BAD4D9;
+  background-color: #0f0b30de;
   padding: 2.5rem;
   border-radius: 16px;
   display: flex;
@@ -133,7 +133,7 @@
   font-size: 3rem;
   margin-bottom: 1rem;
   text-align: center;
-  color: white;
+  color: #F78F02;
   margin-top: -30px;
   letter-spacing: 0.1em;
 }
@@ -149,6 +149,7 @@
   font-size: 2rem;
   margin-bottom: 1.5rem;
   text-align: center;
+  color: white;
 }
 
 .form {
@@ -207,7 +208,7 @@
 
 .button {
   padding: 0.75rem;
-  background-color: #0070f3;
+  background-color: #F78F02;
   color: white;
   font-size: 1rem;
   border: none;
@@ -219,7 +220,7 @@
 }
 
 .button:hover {
-  background-color: #005bb5;
+  background-color: #815c28;
 }
 
 .message {
@@ -284,6 +285,7 @@
   .homeIcon {
     width: 20px;
     height: 20px;
+} 
 }
 
 /* Estilos para la ventana emergente (pop-up) */
@@ -297,7 +299,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 2000;
 }
 
 .popup {
@@ -326,6 +328,7 @@
   background-color: #005bb5;
 }
 
+
 .row {
   display: flex;
   justify-content: space-between;
@@ -346,19 +349,19 @@
   background-color: #005bb5;
 }
 
+/* Estilos para los botones de radio (Pupilo y Tutor) */
 .radioGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
+  display: flex !important;
+  justify-content: center !important; /* Centra horizontalmente */
+  margin-bottom: 2rem !important; /* Aumenta el espacio debajo de los botones */
+  gap: 20px !important; /* Espacio entre los botones */
+  color: white;
+  font-size: 20px;
 }
 
-.radioOption {
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-
-.radioOption input[type="radio"] {
-  margin-right: 10px;
-}
+.error {
+  color: #ff4d4d; /* Un rojo más claro y visible sobre fondos oscuros */
+  font-size: 15px; /* Ajusta el tamaño del texto si es necesario */
+  margin-top: 0.5rem; /* Espacio adicional para que no quede pegado al campo */
 }
 

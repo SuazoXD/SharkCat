@@ -21,25 +21,64 @@ export default function Register() {
     horarioDiponibleInicio: '09:00:00',
     horarioDisponibleFin: '18:00:00',
   });
-  
+
+  const [errors, setErrors] = useState({});
   const [step, setStep] = useState(1); // Estado para manejar los pasos del formulario
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(''); // Agregamos el estado message
   const [showPassword, setShowPassword] = useState(false); // Para mostrar/ocultar contraseñas
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Para mostrar/ocultar confirmación
   const [showPopup, setShowPopup] = useState(false); // Estado para controlar la visibilidad del pop-up
   const [redirectToLogin, setRedirectToLogin] = useState(false); // Estado para mostrar si se redirigirá al login
   const router = useRouter(); // Para manejar redirecciones
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Función para validar los campos del primer paso
+  const validateFirstStep = () => {
+    let errors = {};
 
-    // Verificar que las contraseñas coinciden
-    if (formData.contrasenia !== formData.confirmarContrasenia) {
-      setMessage('Las contraseñas no coinciden.');
-      setShowPopup(true);
-      return;
+    // Validar que los nombres y apellidos no estén vacíos
+    if (!formData.primerNombre.trim()) errors.primerNombre = 'El primer nombre es obligatorio';
+    if (!formData.primerApellido.trim()) errors.primerApellido = 'El primer apellido es obligatorio';
+
+    // Validar el correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.correo)) errors.correo = 'El correo electrónico no es válido';
+
+    // Validar la contraseña
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>_\-]).{8,}$/;
+    if (!passwordRegex.test(formData.contrasenia)) {
+      errors.contrasenia = 'La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un símbolo especial';
     }
 
+    // Validar que las contraseñas coincidan
+    if (formData.contrasenia !== formData.confirmarContrasenia) {
+      errors.confirmarContrasenia = 'Las contraseñas no coinciden';
+    }
+
+    setErrors(errors);
+
+    // Si no hay errores, retorna true, si hay errores, retorna false
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleNextStep = (e) => {
+    e.preventDefault();
+
+    // Validar todos los campos del primer paso
+    const isValid = validateFirstStep();
+
+    if (isValid) {
+      // Si la validación es correcta, avanzar al segundo paso
+      setStep(2);
+    } else {
+      // Si hay errores, mostrar todos los errores en el popup
+      setShowPopup(true);
+    }
+  };
+
+  // Función para manejar el envío del formulario completo (segundo paso)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
     const dataToSend = {
       ...formData,
       idRol: Number(formData.idRol),
@@ -63,12 +102,7 @@ export default function Register() {
       setRedirectToLogin(false); // No redirigir en caso de error
     }
   };
-
-  const handleNextStep = (e) => {
-    e.preventDefault();
-    setStep(2);
-  };
-
+  
   const closePopup = () => {
     setShowPopup(false);
     if (redirectToLogin) {
@@ -111,6 +145,7 @@ export default function Register() {
                   required
                   className={styles.input}
                 />
+                {errors.primerNombre && <span className={styles.error}>{errors.primerNombre}</span>}
                 <input
                   type="text"
                   placeholder="Segundo Nombre"
@@ -128,6 +163,7 @@ export default function Register() {
                   required
                   className={styles.input}
                 />
+                {errors.primerApellido && <span className={styles.error}>{errors.primerApellido}</span>}
                 <input
                   type="text"
                   placeholder="Segundo Apellido"
@@ -144,6 +180,8 @@ export default function Register() {
                 required
                 className={styles.input}
               />
+              {errors.correo && <span className={styles.error}>{errors.correo}</span>}
+
               <div className={styles.passwordContainer}>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -165,6 +203,7 @@ export default function Register() {
                   />
                 </button>
               </div>
+              {errors.contrasenia && <span className={styles.error}>{errors.contrasenia}</span>}
 
               <div className={styles.passwordContainer}>
                 <input
@@ -187,8 +226,21 @@ export default function Register() {
                   />
                 </button>
               </div>
+              {errors.confirmarContrasenia && <span className={styles.error}>{errors.confirmarContrasenia}</span>}
+
               <button type="submit" className={styles.button}>Continuar Registro</button>
             </form>
+
+            {/* Popup modal para mostrar errores de validación */}
+            {showPopup && (
+              <div className={styles.popupOverlay}>
+                <div className={styles.popup}>
+                  <h2>Error de Validación</h2>
+                  <p>{message}</p> {/* Mostrar el mensaje de error */}
+                  <button onClick={closePopup} className={styles.closeButton}>Cerrar</button>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className={styles.registerBox}>
@@ -207,74 +259,51 @@ export default function Register() {
                 required
                 className={styles.input}
               />
-              <input
-                type="text"
-                placeholder="DNI"
-                value={formData.dni}
-                onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
-                className={styles.input}
-              />
-              <input
-                type="tel"
-                placeholder="Número de Teléfono"
-                value={formData.telefono}
-                onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                className={styles.input}
-              />
-              {/*
-              <div className={styles.row}>
+            <input
+              type="text"
+              placeholder="DNI"
+              value={formData.dni}
+              onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
+              className={styles.input}
+            />
+            <input
+              type="tel"
+              placeholder="Número de Teléfono"
+              value={formData.telefono}
+              onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+              className={styles.input}
+            />
+
+            <label className={styles.label}>¿Eres Pupilo o Tutor?</label>
+            <div className={styles.radioGroup}>
+              <label className={styles.radioOption}>
                 <input
-                  type="text"
-                  placeholder="Código de Verificación"
-                  value={formData.codigoVerificacion}
-                  onChange={(e) => setFormData({ ...formData, codigoVerificacion: e.target.value })}
-                  className={`${styles.input} ${styles.smallInput}`}
+                  type="radio"
+                  name="rol"
+                  value="pupilo"
+                  checked={formData.idRol === 1}
+                  onChange={() => setFormData({ ...formData, idRol: 1 })}
                 />
-                <button className={`${styles.button} ${styles.verifyButton}`}>Verificar Código</button>
-              </div>*/}
+                Soy Pupilo
+              </label>
+              <label className={styles.radioOption}>
+                <input
+                  type="radio"
+                  name="rol"
+                  value="tutor"
+                  checked={formData.idRol === 2}
+                  onChange={() => setFormData({ ...formData, idRol: 2 })}
+                />
+                Soy Tutor
+              </label>
+            </div>
 
-              <label className={styles.label}>¿Eres Pupilo o Tutor?</label>
-              <div className={styles.radioGroup}>
-                <label className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    name="rol"
-                    value="pupilo"
-                    checked={formData.idRol === 1}
-                    onChange={() => setFormData({ ...formData, idRol: 1 })}
-                  />
-                  Soy Pupilo
-                </label>
-                <label className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    name="rol"
-                    value="tutor"
-                    checked={formData.idRol === 2}
-                    onChange={() => setFormData({ ...formData, idRol: 2 })}
-                  />
-                  Soy Tutor
-                </label>
-                {/*
-                <label className={styles.radioOption}>
-                  <input
-                    type="radio"
-                    name="rol"
-                    value="ambos"
-                    checked={formData.idRol === 3}
-                    onChange={() => setFormData({ ...formData, idRol: 3 })}
-                  />
-                  Quiero ser Pupilo y Tutor
-                </label>*/}
-              </div>
-
-              <button type="submit" className={styles.button}>Registrar</button>
-            </form>
-          </div>
+            <button type="submit" className={styles.button}>Registrar</button>
+          </form>
+        </div>
         )}
-
-        {/* Footer */}
-        <footer className={styles.footer}>
+      {/* Footer */}
+      <footer className={styles.footer}>
           <div className={styles.footerContent}>
             <div>
               <h3>Recursos Académicos</h3>
