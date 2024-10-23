@@ -1,3 +1,103 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbar {
+  background-color: #333;
+  padding: 1rem;
+  color: white;
+}
+
+.navbarContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navLinks a {
+  margin-left: 8rem;
+  color: white;
+  text-decoration: none;
+}
+
+.navLinks a:hover {
+  text-decoration: underline;
+}
+
+.registerButton {
+  background-color: #0070f3;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.registerButton:hover {
+  background-color: #005bb5;
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  padding: 2rem 0;
+  margin-top: auto;
+}
+
+.footerContent {
+  display: flex;
+  justify-content: space-around;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer h3 {
+  margin-bottom: 0.5rem;
+}
+
+.subscribeSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.subscribeButton {
+  background-color: #0070f3;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.subscribeButton:hover {
+  background-color: #005bb5;
+}
+
+.footerBottom {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.875rem;
+}
+
+.footerBottom a {
+  color: white;
+  text-decoration: none;
+}
+
+.footerBottom a:hover {
+  text-decoration: underline;
+}
+
+/* Estilos existentes */
 .container {
   display: flex;
   flex-direction: column;
@@ -13,14 +113,14 @@
 }
 
 .registerBox {
-  background-color: #BAD4D9;
+  background-color: #0f0b30de;
   padding: 2.5rem;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
   margin: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -33,7 +133,7 @@
   font-size: 3rem;
   margin-bottom: 1rem;
   text-align: center;
-  color: white;
+  color: #F78F02;
   margin-top: -30px;
   letter-spacing: 0.1em;
 }
@@ -49,13 +149,14 @@
   font-size: 2rem;
   margin-bottom: 1.5rem;
   text-align: center;
+  color: white;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
   box-sizing: border-box;
 }
 
@@ -67,7 +168,6 @@
   border: 1px solid #ccc;
   width: 100%;
   box-sizing: border-box;
-  padding-right: 40px; /* Espacio para el botón del ojo */
 }
 
 .passwordContainer {
@@ -108,7 +208,7 @@
 
 .button {
   padding: 0.75rem;
-  background-color: #0070f3;
+  background-color: #F78F02;
   color: white;
   font-size: 1rem;
   border: none;
@@ -120,7 +220,7 @@
 }
 
 .button:hover {
-  background-color: #005bb5;
+  background-color: #815c28;
 }
 
 .message {
@@ -185,7 +285,7 @@
   .homeIcon {
     width: 20px;
     height: 20px;
-  }
+} 
 }
 
 /* Estilos para la ventana emergente (pop-up) */
@@ -199,7 +299,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 2000;
 }
 
 .popup {
@@ -227,3 +327,41 @@
 .closeButton:hover {
   background-color: #005bb5;
 }
+
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.smallInput {
+  width: 60%;
+}
+
+.verifyButton {
+  width: 35%;
+  background-color: #0070f3;
+  color: white;
+}
+
+.verifyButton:hover {
+  background-color: #005bb5;
+}
+
+/* Estilos para los botones de radio (Pupilo y Tutor) */
+.radioGroup {
+  display: flex !important;
+  justify-content: center !important; /* Centra horizontalmente */
+  margin-bottom: 2rem !important; /* Aumenta el espacio debajo de los botones */
+  gap: 20px !important; /* Espacio entre los botones */
+  color: white;
+  font-size: 20px;
+}
+
+.error {
+  color: #ff4d4d; /* Un rojo más claro y visible sobre fondos oscuros */
+  font-size: 15px; /* Ajusta el tamaño del texto si es necesario */
+  margin-top: 0.5rem; /* Espacio adicional para que no quede pegado al campo */
+}
+
