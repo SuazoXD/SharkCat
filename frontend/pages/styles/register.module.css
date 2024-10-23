@@ -160,6 +160,12 @@
   box-sizing: border-box;
 }
 
+.inputContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .input {
   margin-bottom: 1rem;
   padding: 0.75rem;
@@ -332,7 +338,7 @@
 .row {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 20px;
 }
 
 .smallInput {
