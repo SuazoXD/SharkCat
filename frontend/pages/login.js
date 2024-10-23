@@ -12,36 +12,36 @@ export default function Login() {
   const [showPopup, setShowPopup] = useState(false); // Estado para controlar el pop-up
   const router = useRouter(); // Inicializa useRouter para redirecciones
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        const response = await axios.post('http://localhost:3000/auth/log-in', {
-          correo: email,
-          password: password
-        });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Realiza la solicitud al backend para iniciar sesión
+      const response = await axios.post('http://localhost:3000/auth/log-in', {
+        correo: email,
+        password: password
+      });
 
-        // Si la respuesta es exitosa, redirigir a UserHome
-        if (response.status === 200) {
-          const userId = response.data.idUsuario; // Extraer el ID del usuario
-          localStorage.setItem('userId', userId); // Guardar el ID en localStorage
-          setMessage('Inicio de sesión exitoso.');
-          setShowPopup(true); // Mostrar el pop-up con el mensaje de éxito
+      // Si la respuesta es exitosa (código 200), almacenar el access_token en localStorage
+      if (response.status === 200) {
+        const accessToken = response.data.access_token; // Extraer el access_token de la respuesta
+        localStorage.setItem('access_token', accessToken); // Guardar el access_token en localStorage
+        setMessage('Inicio de sesión exitoso.');
+        setShowPopup(true); // Mostrar el pop-up con el mensaje de éxito
 
-          // Redirige después de 3 segundos
-          setTimeout(() => {
-            router.push('/UserHome');
-          }, 3000);
-        } else {
-          setMessage('Error de inicio de sesión. Verifica tus credenciales.');
-          setShowPopup(true); // Mostrar el pop-up con el mensaje de error
-        }
-      } catch (error) {
-        // Si hay un error (como credenciales incorrectas), mostrar un mensaje de error
+        // Redirige después de 3 segundos
+        setTimeout(() => {
+          router.push('/UserHome'); // Redirigir a la página del usuario
+        }, 3000);
+      } else {
         setMessage('Error de inicio de sesión. Verifica tus credenciales.');
         setShowPopup(true); // Mostrar el pop-up con el mensaje de error
       }
+    } catch (error) {
+      // Si hay un error (como credenciales incorrectas), mostrar un mensaje de error
+      setMessage('Error de inicio de sesión. Verifica tus credenciales.');
+      setShowPopup(true); // Mostrar el pop-up con el mensaje de error
+    }
   };
-
 
   const closePopup = () => {
     setShowPopup(false); // Ocultar el pop-up cuando se cierre
@@ -112,7 +112,7 @@ export default function Login() {
           <button type="submit" className={styles.button}>Iniciar Sesión</button>
 
           {/* Enlace para recuperar contraseña */}
-          <a href="http://localhost:3001/change-password" className={styles.forgotPasswordLink}>
+          <a href="http://localhost:3001/recovery-password" className={styles.forgotPasswordLink}>
             Recuperar contraseña
           </a>
 

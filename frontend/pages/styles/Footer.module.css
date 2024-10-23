@@ -1,54 +1,40 @@
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: #fff;
-  width: 100%; /* Asegurar que cubra el ancho de la pantalla */
-  box-shadow: 0px -4px 12px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  bottom: 0;
-  left: 0;
+.footer{
+    background-color: #F7F7F7;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
 }
 
-.logoContainer {
-  display: flex;
-  align-items: center;
+.contenedorGral{
+    display: grid;
+    grid-template-columns: 80% 20%; /* La primera columna ocupa el 60% y la segunda el 40% */
+    }
+
+.contenedor1{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas dentro de la primera casilla */
 }
 
-.logo {
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
+.contenedor2{
+    display: grid;
+    grid-template-columns: 1fr; /* Una sola columna dentro de la segunda casilla */
+    gap: 10px;
 }
-
-.brandName {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #333;
-}
-
-.footerLinks {
-  display: flex;
-  gap: 20px;
-}
-
-.footerLinks a {
-  text-decoration: none;
-  color: #333;
-  font-size: 1em;
-}
-
-.footerLinks a:hover {
-  text-decoration: underline;
-}
-
-.socialIcons {
-  display: flex;
-  gap: 20px;
-}
-
-.icon {
-  width: 20px;
-  height: 20px;
-}
+.socialGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+  }
+  
+  .socialGrid li {
+    display: flex;
+    align-items: center;
+  }
+  
+  .socialIcon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+  }

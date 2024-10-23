@@ -1,54 +1,116 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router'; // Para manejar redirecciones
 import styles from '../pages/styles/userhome.module.css';
 
-export default function UserHome() {
-  const [userId, setUserId] = useState(null);
-  const [userDetails, setUserDetails] = useState({}); // Estado para almacenar los datos del usuario
+export default function UserProfile() {
+  const [userDetails, setUserDetails] = useState(null); // Estado para almacenar los detalles del usuario
+  const [message, setMessage] = useState('');
   const [menuVisible, setMenuVisible] = useState(false); // Estado para mostrar u ocultar el menú de perfil
-  const [coursesVisible, setCoursesVisible] = useState(false); // Estado para mostrar u ocultar el menú de cursos
+  const [offerMessage, setOfferMessage] = useState(''); // Estado para el mensaje de la oferta
+  const [idPregunta, setIdPregunta] = useState(''); // Estado para el ID de la pregunta
+  const [responseMessage, setResponseMessage] = useState(''); // Estado para almacenar el mensaje de respuesta de la oferta
+  const router = useRouter(); // Para manejar redirecciones
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem('userId');
-    setUserId(storedUserId);
+    // Obtener el token almacenado en localStorage
+    const token = localStorage.getItem('access_token');
 
-    if (storedUserId) {
-      fetch(`http://localhost:3000/home/${storedUserId}`)
-        .then(response => response.json())
-        .then(data => {
-          // Guardar los datos del usuario (primernombre, segundonombre, primerapellido, segundoapellido)
-          setUserDetails({
-            primernombre: data.primernombre,
-            segundonombre: data.segundonombre,
-            primerapellido: data.primerapellido,
-            segundoapellido: data.segundoapellido,
-          });
-        })
-        .catch(error => console.error('Error al obtener los detalles del usuario:', error));
+    // Si no hay token, redirigir al usuario a la página de login
+    if (!token) {
+      setMessage('No estás autenticado. Redirigiendo al inicio de sesión...');
+      setTimeout(() => {
+        router.push('/login');
+      }, 3000);
+      return;
     }
+
+    // Hacer la solicitud al backend para obtener el perfil del usuario
+    axios
+      .get('http://localhost:3000/user/profile/', {
+        headers: {
+          Authorization: `Bearer ${token}` // Enviar el token en los headers
+        }
+      })
+      .then((response) => {
+        setUserDetails(response.data); // Guardar los detalles del perfil en el estado
+      })
+      .catch((error) => {
+        console.error('Error al obtener los detalles del perfil:', error);
+        setMessage('Error al obtener los detalles del perfil.');
+      });
   }, []);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible); // Mostrar u ocultar el menú de perfil
   };
 
-  const toggleCourses = () => {
-    setCoursesVisible(!coursesVisible); // Mostrar u ocultar el menú de cursos
+  const sendOffer = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('access_token'); // Obtener el token de localStorage
+
+    if (!token) {
+      setResponseMessage('No estás autenticado.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost:3000/user/pregunta/send-offer',
+        {
+          idPregunta: idPregunta, // ID de la pregunta que se quiere resolver
+          descripcion: offerMessage // Mensaje de la oferta
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}` // Enviar el token en los headers
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        setResponseMessage('¡Oferta enviada con éxito!');
+      } else {
+        setResponseMessage('Error al enviar la oferta. Inténtalo de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error al enviar la oferta:', error);
+      setResponseMessage('Error al enviar la oferta. Inténtalo de nuevo.');
+    }
   };
+
+  const goToPupilPage = () => {
+    router.push('/pupilQuestion'); // Redirigir a la página del pupilo
+  };
+
+  const goToTutorPage = () => {
+    router.push('/tutorQuestions'); // Redirigir a la página del tutor
+  };
+
+  // **Nueva función** para redirigir a la página de agregar materia
+  const goToAggMateriaPage = () => {
+    router.push('/aggMateria'); // Redirigir a la página para agregar materia
+  };
+
+  if (message) {
+    return <p>{message}</p>;
+  }
 
   return (
     <div className={styles.container}>
       {/* Barra de navegación */}
       <nav className={styles.navbar}>
-        <div className={styles.logoSection} onClick={toggleCourses}>
+        <div className={styles.logoSection}>
           <img src="/images/logo.png" alt="Logo SharkCat" className={styles.logo} />
-          {/* Mostrar el nombre completo del usuario */}
           <span className={styles.username}>
-            {`${userDetails.primernombre} ${userDetails.segundonombre} ${userDetails.primerapellido} ${userDetails.segundoapellido}`} (ID: {userId})
+            {userDetails
+              ? `${userDetails.nombre.primerNombre} ${userDetails.nombre.segundoNombre} ${userDetails.nombre.primerApellido} ${userDetails.nombre.segundoApellido}`
+              : 'Cargando...'}
           </span>
         </div>
         <div className={styles.profileSection}>
           <img 
-            src="/images/images.jpg" // Imagen temporal del perfil 
+            src="/images/images.jpg" // Imagen temporal del perfil
             alt="Perfil" 
             className={styles.profileIcon} 
             onClick={toggleMenu} 
@@ -63,38 +125,59 @@ export default function UserHome() {
         </div>
       )}
 
-      {/* Menú de cursos desplegable */}
-      {coursesVisible && (
-        <div className={styles.coursesDropdown}>
-          <a href="/courses" className={styles.dropdownItem}>Cursos disponibles</a>
+      {/* Botones para cambiar entre páginas de Pupilo y Tutor */}
+      <div className={styles.switchRoleButtons}>
+        <button onClick={goToPupilPage} className={styles.button}>Página de Pupilo</button>
+        <button onClick={goToTutorPage} className={styles.button}>Página de Tutor</button>
+
+        {/* Botón para agregar materia de interés */}
+        <button onClick={goToAggMateriaPage} className={styles.button}>Agregar Materia de Interés</button>
+      </div>
+
+      {/* Contenido del perfil */}
+      <div className={styles.profileContainer}>
+        {userDetails ? (
+          <div className={styles.profileDetails}>
+            <h1>Perfil de Usuario</h1>
+            <p><strong>Nombre:</strong> {userDetails.nombre.primerNombre} {userDetails.nombre.segundoNombre} {userDetails.nombre.primerApellido} {userDetails.nombre.segundoApellido}</p>
+            <p><strong>Edad:</strong> {userDetails.edad}</p>
+            <p><strong>Correo:</strong> {userDetails.correo}</p>
+            <p><strong>DNI:</strong> {userDetails.dni}</p>
+            <p><strong>Teléfono:</strong> {userDetails.telefono}</p>
+            <p><strong>Horario Disponible:</strong> {new Date(userDetails.horarioDisponibleInicio).toLocaleTimeString()} - {new Date(userDetails.horarioDisponibleFin).toLocaleTimeString()}</p>
+            <p><strong>Rol:</strong> {userDetails.rol.rol}</p>
+            <p><strong>Valoración:</strong> {userDetails.valoracion}</p>
+          </div>
+        ) : (
+          <p>Cargando detalles del perfil...</p>
+        )}
+      </div>
+
+      {/* Mostrar solo si el usuario es tutor */}
+      {userDetails && userDetails.rol.rol === 'tutor' && (
+        <div className={styles.offerContainer}>
+          <h2>Enviar oferta de resolución</h2>
+          <form onSubmit={sendOffer} className={styles.form}>
+            <input
+              type="number"
+              placeholder="ID de la pregunta"
+              value={idPregunta}
+              onChange={(e) => setIdPregunta(e.target.value)}
+              required
+              className={styles.input}
+            />
+            <textarea
+              placeholder="Escribe tu mensaje de oferta..."
+              value={offerMessage}
+              onChange={(e) => setOfferMessage(e.target.value)}
+              required
+              className={styles.textarea}
+            />
+            <button type="submit" className={styles.button}>Enviar Oferta</button>
+          </form>
+          {responseMessage && <p>{responseMessage}</p>} {/* Mostrar el mensaje de respuesta */}
         </div>
       )}
-
-      {/* Contenido principal con mensaje de bienvenida y post */}
-      <div className={styles.content}>
-        <div className={styles.welcomePost}>
-          <h1 className={styles.title}>¡Bienvenido a la comunidad SharkCat!</h1>
-          <p className={styles.subtitle}>Estamos emocionados de que seas parte de nuestra familia. Comparte, aprende y crece con nosotros.</p>
-          
-          {/* Publicación de bienvenida */}
-          <div className={styles.postContainer}>
-            <div className={styles.postHeader}>
-              <img src="/images/logo.png" alt="Logo SharkCat" className={styles.postLogo} />
-              <span className={styles.postUsername}>SharkCat</span>
-            </div>
-            <p className={styles.postText}>¡Nos encanta verte aquí! Recuerda revisar nuestros cursos disponibles y disfrutar aprendiendo con nosotros.</p>
-          </div>
-
-          {/* Contenedor para que el usuario pueda hacer publicaciones */}
-          <div className={styles.createPostContainer}>
-            <textarea 
-              className={styles.textArea} 
-              placeholder="Comparte algo con la comunidad..." 
-            />
-            <button className={styles.postButton}>Publicar</button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

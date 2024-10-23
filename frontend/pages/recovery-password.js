@@ -7,11 +7,15 @@ const RecoveryPassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
   const [formSent, setFormSent] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(''); // Para manejar el error de longitud
+  const [errorMessage, setErrorMessage] = useState(''); // Para manejar los errores de validación
+
+  // Expresiones regulares para mayúscula y carácter especial
+  const hasUppercase = /[A-Z]/;
+  const hasSpecialChar = /[!@#$%^&*()_+[\]{};':"\\|,.<>\/?]/;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch('http://localhost:3000/auth/req-reset-password', {
         method: 'POST',
@@ -36,8 +40,17 @@ const RecoveryPassword = () => {
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
+    // Validación de la contraseña
     if (newPassword.length < 8) {
-      setErrorMessage('Caracteres insuficientes (mínimo 8)');
+      setErrorMessage('La contraseña debe tener al menos 8 caracteres.');
+      return; // No continúa con la solicitud si hay error
+    }
+    if (!hasUppercase.test(newPassword)) {
+      setErrorMessage('La contraseña debe incluir al menos una letra mayúscula.');
+      return; // No continúa con la solicitud si hay error
+    }
+    if (!hasSpecialChar.test(newPassword)) {
+      setErrorMessage('La contraseña debe incluir al menos un carácter especial.');
       return; // No continúa con la solicitud si hay error
     }
 
@@ -121,10 +134,10 @@ const RecoveryPassword = () => {
               required
               className={styles.input}
             />
-            
-            {/* Mensaje de error si la longitud es menor a 8 caracteres */}
-            {errorMessage && <p className={styles.errorMessage} className={styles.labelPink}>{errorMessage}</p>}
-            
+
+            {/* Mensaje de error si la contraseña no cumple los requisitos */}
+            {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
+
             <button type="submit" className={styles.button}>Cambiar Contraseña</button>
           </form>
         )}
