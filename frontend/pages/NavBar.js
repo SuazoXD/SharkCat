@@ -1,4 +1,4 @@
-"use client"; // Indica que es un componente cliente
+"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -7,34 +7,38 @@ import axios from 'axios';
 import styles from './styles/navbar.module.css';
 
 export default function Navbar() {
-  // Estado para almacenar las categorías obtenidas del backend
   const [categories, setCategories] = useState([]);
-  // Estado para almacenar las materias de la categoría seleccionada
   const [materias, setMaterias] = useState([]);
-  // Estado para almacenar la categoría seleccionada
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado para verificar si el usuario está autenticado
 
-  // Obtener las categorías desde el backend al cargar el componente
   useEffect(() => {
+    // Verificar si el token existe en localStorage y que no esté vacío
+    const token = localStorage.getItem('access_token');
+    if (token && token !== "undefined" && token !== "null") {
+      setIsAuthenticated(true); // Si hay token válido, el usuario está autenticado
+    } else {
+      setIsAuthenticated(false); // Si no hay token o es inválido, no está autenticado
+    }
+
+    // Obtener las categorías desde el backend
     axios
       .get('http://localhost:3000/categories')
       .then((response) => {
-        setCategories(response.data); // Guardar las categorías en el estado
+        setCategories(response.data);
       })
       .catch((error) => {
         console.error('Error al obtener las categorías:', error);
       });
   }, []);
 
-  // Función para manejar la selección de una categoría
   const handleCategorySelect = (categoryId) => {
-    setSelectedCategory(categoryId); // Guardar la categoría seleccionada
+    setSelectedCategory(categoryId);
 
-    // Hacer una solicitud GET para obtener las materias de la categoría seleccionada
     axios
       .get(`http://localhost:3000/categories/materia/${categoryId}`)
       .then((response) => {
-        setMaterias(response.data); // Guardar las materias en el estado
+        setMaterias(response.data);
       })
       .catch((error) => {
         console.error('Error al obtener las materias:', error);
@@ -46,37 +50,49 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         <div className={styles.logoSection}>
           <Image 
-            src="/images/logo.png" // Ruta de la imagen
-            alt="Logo de SharkCat" 
-            width={50} 
-            height={50} 
+            src="/images/logo.png"
+            alt="Logo de SharkCat"
+            width={50}
+            height={50}
           />
           <h1 className={styles.navTitle}>SharkCat</h1>
 
-          {/* Botón de Categorías al lado del logo */}
+          {/* Botón de Categorías */}
           <div className={styles.dropdown}>
-            <button className={styles.dropdownButton}>Categorías</button>
+            <button className={styles.dropdownButton}>
+              <Image 
+                src="/images/logo.png"
+                alt="Categorías"
+                width={20}
+                height={20}
+              /> 
+              Categorías
+            </button>
             <div className={styles.dropdownContent}>
               {categories.length > 0 ? (
-                categories.map((category) => (
-                  <div key={category.idCategoria}>
-                    <button 
-                      className={styles.dropdownItem} 
-                      onClick={() => handleCategorySelect(category.idCategoria)}
-                    >
-                      {category.categoria}
-                    </button>
-                    {selectedCategory === category.idCategoria && materias.length > 0 && (
-                      <div className={styles.submenu}>
-                        {materias.map((materia) => (
-                          <Link key={materia.idMateria} href="#">
-                            {materia.materia}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))
+                <ul>
+                  {categories.map((category) => (
+                    <li key={category.idCategoria}>
+                      <button 
+                        className={styles.dropdownItem} 
+                        onClick={() => handleCategorySelect(category.idCategoria)}
+                      >
+                        {category.categoria}
+                      </button>
+                      {selectedCategory === category.idCategoria && materias.length > 0 && (
+                        <ul className={styles.submenu}>
+                          {materias.map((materia) => (
+                            <li key={materia.idMateria}>
+                              <Link href="#">
+                                {materia.materia}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               ) : (
                 <p>Cargando categorías...</p>
               )}
@@ -84,24 +100,55 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Barra de búsqueda centrada */}
+        {/* Barra de búsqueda */}
         <div className={styles.navSearch}>
           <input type="text" placeholder="Buscar" className={styles.searchInput} />
-          <button className={styles.searchButton}>🔍</button>
+          <button className={styles.searchButton}>
+            <Image src="/images/Logo.png" alt="Buscar" width={16} height={16} />
+          </button>
         </div>
 
-        {/* Botones de inicio de sesión y registro */}
-        <ul className={styles.navLinks}>
-          <li>
-            <Link href="http://localhost:3001/login">
-              <button className={styles.authButton}>Iniciar Sesión</button>
-            </Link>
-          </li>
-          <li>
-            <Link href="http://localhost:3001/register">
-              <button className={styles.authButton}>Registrarse</button>
-            </Link>
-          </li>
+        {/* Botones de autenticación */}
+        <ul className={styles.authButtons}>
+          {isAuthenticated ? (
+            <>
+              <li>
+                <Link href="http://localhost:3001/UserProfile">
+                  <button className={styles.authButton}>
+                    <Image src="/images/logo.png" alt="Perfil" width={20} height={20} />
+                    Perfil
+                  </button>
+                </Link>
+              </li>
+              <li>
+                <Link href="http://localhost:3001/UserHome">
+                  <button className={styles.authButton}>
+                    <Image src="/images/logo.png" alt="Página Principal" width={20} height={20} />
+                    Página Principal
+                  </button>
+                </Link>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link href="http://localhost:3001/login">
+                  <button className={styles.authButton}>
+                    <Image src="/images/logo.png" alt="Iniciar Sesión" width={20} height={20} />
+                    Iniciar Sesión
+                  </button>
+                </Link>
+              </li>
+              <li>
+                <Link href="http://localhost:3001/register">
+                  <button className={styles.authButton}>
+                    <Image src="/images/logo.png" alt="Registrarse" width={20} height={20} />
+                    Registrarse
+                  </button>
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </header>
