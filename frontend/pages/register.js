@@ -66,7 +66,7 @@ export default function Register() {
   // Validación del segundo paso (contraseñas)
   const validateSecondStep = () => {
     let errors = {};
-    const passwordRegex = /^(?=.[A-Z])(?=.[!@#$%^&*(),.?":{}|<>_\-]).{8,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>_\-]).{8,}$/;
 
     if (!passwordRegex.test(formData.contrasenia)) {
       errors.contrasenia = 'La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un símbolo especial';
@@ -147,12 +147,6 @@ export default function Register() {
 
   return (
     <div className={styles.pageContainer}>
-      <nav className={styles.navbar}>
-        <div className={styles.navbarContainer}>
-          <div className={styles.logo}>SharkCat - Demo</div>
-        </div>
-      </nav>
-
       <div className={styles.container}>
         {step === 1 && (
           <div className={styles.registerBox}>

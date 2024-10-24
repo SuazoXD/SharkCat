@@ -10,15 +10,16 @@ export default function Navbar() {
   const [categories, setCategories] = useState([]);
   const [materias, setMaterias] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado para verificar si el usuario está autenticado
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false); // Estado para el dropdown del perfil
 
   useEffect(() => {
-    // Verificar si el token existe en localStorage y que no esté vacío
+    // Verificar si el token existe en localStorage
     const token = localStorage.getItem('access_token');
-    if (token && token !== "undefined" && token !== "null") {
-      setIsAuthenticated(true); // Si hay token válido, el usuario está autenticado
+    if (token) {
+      setIsAuthenticated(true);
     } else {
-      setIsAuthenticated(false); // Si no hay token o es inválido, no está autenticado
+      setIsAuthenticated(false);
     }
 
     // Obtener las categorías desde el backend
@@ -43,6 +44,15 @@ export default function Navbar() {
       .catch((error) => {
         console.error('Error al obtener las materias:', error);
       });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token'); // Elimina el token del localStorage
+    window.location.href = 'http://localhost:3001/login'; // Redirigir al login
+  };
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible); // Alternar el menú desplegable
   };
 
   return (
@@ -113,15 +123,23 @@ export default function Navbar() {
           {isAuthenticated ? (
             <>
               <li>
-                <Link href="http://localhost:3001/UserProfile">
-                  <button className={styles.authButton}>
+                {/* Botón de Perfil con menú desplegable */}
+                <div className={styles.profileDropdown}>
+                  <button className={styles.authButton} onClick={toggleMenu}>
                     <Image src="/images/logo.png" alt="Perfil" width={20} height={20} />
                     Perfil
                   </button>
-                </Link>
+                  {menuVisible && (
+                    <div className={styles.profileMenu}>
+                      <Link href="/userdata">Información Personal</Link>
+                      <Link href="/ChangePassword">Cambio de Contraseña</Link>
+                      <button onClick={handleLogout}>Cerrar Sesión</button>
+                    </div>
+                  )}
+                </div>
               </li>
               <li>
-                <Link href="http://localhost:3001/UserHome">
+                <Link href="/UserHome">
                   <button className={styles.authButton}>
                     <Image src="/images/logo.png" alt="Página Principal" width={20} height={20} />
                     Página Principal

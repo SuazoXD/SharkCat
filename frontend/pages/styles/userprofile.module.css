@@ -1,0 +1,252 @@
+/* CSS (userprofile.module.css) */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding: 20px;
+  text-align: center;
+}
+
+.coverPhotoContainer {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.coverPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.coverInputLabel {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 24px;
+  color: #F10B8F;
+  background: #FFFFFF;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.coverInput {
+  display: none;
+}
+
+.centeredProfileContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.profileContainer {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  max-width: 800px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.profileImageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profileImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 3px solid #420A69;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.fileInputLabel {
+  cursor: pointer;
+  font-size: 24px;
+  color: #F10B8F;
+  margin-bottom: 10px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  padding: 8px 15px;
+  background-color: #F10B8F;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.uploadButton:hover {
+  background-color: #A05986;
+}
+
+.profileName {
+  font-size: 20px;
+  color: #420A69;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.profileDetailsContainer {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.profileDetailContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-direction: column;
+}
+
+.profileDetailContainer label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #420A69;
+}
+
+.profileDetailContainer input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editButtonLabel {
+  font-size: 20px;
+  color: #F10B8F;
+  cursor: pointer;
+}
+
+.commentsSection {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.commentInputContainer {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.commentInput {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ratingContainer {
+  margin-bottom: 10px;
+}
+
+.submitCommentButton {
+  padding: 8px 15px;
+  background-color: #420A69;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.submitCommentButton:hover {
+  background-color: #A05986;
+}
+
+.commentsList {
+  margin-top: 15px;
+}
+
+.commentItem {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.messageContainer {
+  background-color: #9D3A1D;
+  color: #FFFFFF;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .profileContainer {
+    padding: 10px;
+  }
+
+  .profileHeader {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profileImage {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profileName {
+    font-size: 16px;
+  }
+
+  .profileDetailsContainer,
+  .commentsSection {
+    max-width: 100%;
+    padding: 15px;
+  }
+}

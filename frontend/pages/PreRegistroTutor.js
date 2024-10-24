@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Navbar from '../pages/Navbar.js';
-import Footer from '../pages/Footer';
+import Footer from '../pages/FooterSC';
 import styles from '../pages/styles/PreRegistro.module.css';
 
 const categoriesByTab = {
