@@ -338,11 +338,7 @@
 .row {
   display: flex;
   justify-content: space-between;
-<<<<<<< HEAD
   gap: 10px;
-=======
-  gap: 20px;
->>>>>>> registro3
 }
 
 .smallInput {
