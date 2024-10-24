@@ -147,11 +147,7 @@ export default function Register() {
 
   return (
     <div className={styles.pageContainer}>
-      <nav className={styles.navbar}>
-        <div className={styles.navbarContainer}>
-          <div className={styles.logo}>SharkCat - Demo</div>
-        </div>
-      </nav>
+     
 
       <div className={styles.container}>
         {step === 1 && (
