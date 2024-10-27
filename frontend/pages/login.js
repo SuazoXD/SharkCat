@@ -56,7 +56,7 @@ export default function Login() {
         </a>
 
         <img 
-          src={password.length > 0 ? "/images/new-logo.png" : "/images/sharkcat1.png"} 
+          src={password.length > 0 ? "/images/new-logo.png" : "/images/logo2.png"} 
           alt="Login Image" 
           className={password.length > 0 ? styles.smallLogo : styles.loginImage} 
         />

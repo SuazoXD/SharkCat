@@ -254,3 +254,83 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Estilos para el modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  max-width: 80%;
+  text-align: center;
+}
+
+.modalContent h2 {
+  margin-bottom: 1rem;
+}
+
+.modalContent ul {
+  list-style: none;
+  padding: 0;
+}
+
+.modalContent li {
+  margin: 10px 0;
+}
+
+.closeModalButton {
+  margin-top: 20px;
+  background-color: #B6ECF2;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.subcategoryList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subcategoryItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.subcategoryItem p {
+  margin: 0;
+  font-size: 1.2rem;
+}

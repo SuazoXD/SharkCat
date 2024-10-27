@@ -4,7 +4,6 @@ import Navbar from './NavBar';
 import Footer from './footerSC';
 import styles from './styles/userprofile.module.css';
 
-
 export default function UserProfile() {
   const [userDetails, setUserDetails] = useState(null);
   const [message, setMessage] = useState('');
@@ -18,6 +17,7 @@ export default function UserProfile() {
     const token = localStorage.getItem('access_token');
     const savedProfilePicture = localStorage.getItem('profile_picture');
     const savedCoverPhoto = localStorage.getItem('cover_photo');
+    const savedUserDetails = localStorage.getItem('user_details');
 
     if (savedProfilePicture) {
       setNewProfilePicture(savedProfilePicture);
@@ -25,7 +25,10 @@ export default function UserProfile() {
     if (savedCoverPhoto) {
       setNewCoverPhoto(savedCoverPhoto);
     }
-    
+    if (savedUserDetails) {
+      setUserDetails(JSON.parse(savedUserDetails));
+    }
+
     if (!token) {
       setMessage('No estás autenticado. Redirigiendo al inicio de sesión...');
       setTimeout(() => {
@@ -34,54 +37,69 @@ export default function UserProfile() {
       return;
     }
 
-    axios.get('http://localhost:3000/user/profile', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then((response) => {
-      setUserDetails(response.data);
-    })
-    .catch((error) => {
-      console.error('Error al obtener el perfil:', error);
-      setMessage('Error al obtener los detalles del perfil.');
-    });
+    axios
+      .get('http://localhost:3000/user/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setUserDetails(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al obtener el perfil:', error);
+        setMessage('Error al obtener los detalles del perfil.');
+      });
   }, []);
 
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setNewProfilePicture(imageUrl);
-      localStorage.setItem('profile_picture', imageUrl);
+  const handleFieldEdit = (field, value) => {
+    const updatedUserDetails = { ...userDetails };
+    if (field.includes('.')) {
+      const keys = field.split('.');
+      updatedUserDetails[keys[0]][keys[1]] = value;
+    } else {
+      updatedUserDetails[field] = value;
     }
+    setUserDetails(updatedUserDetails);
+    localStorage.setItem('user_details', JSON.stringify(updatedUserDetails));
   };
 
-  const handleCoverPhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setNewCoverPhoto(imageUrl);
-      localStorage.setItem('cover_photo', imageUrl);
-    }
-  };
-
-  const handleProfilePictureUpload = () => {
-    if (!newProfilePicture) {
-      alert('No se ha seleccionado ninguna imagen.');
+  const handleProfileUpdate = async () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      alert('No se encontró un token válido.');
       return;
     }
 
-    const formData = new FormData();
-    formData.append('profilePicture', newProfilePicture);
-
-    console.log('Subiendo imagen de perfil...', newProfilePicture);
-  };
-
-  const handleFieldEdit = (field, value) => {
-    const updatedUserDetails = { ...userDetails, [field]: value };
-    setUserDetails(updatedUserDetails);
-    localStorage.setItem('user_details', JSON.stringify(updatedUserDetails));
+    try {
+      const response = await axios.patch(
+        'http://localhost:3000/user/update-info',
+        {
+          primerNombre: userDetails?.nombre?.primerNombre,
+          segundoNombre: userDetails?.nombre?.segundoNombre,
+          primerApellido: userDetails?.nombre?.primerApellido,
+          segundoApellido: userDetails?.nombre?.segundoApellido,
+          edad: userDetails?.edad,
+          dni: userDetails?.dni,
+          telefono: userDetails?.telefono,
+          horarioDisponibleInicio: userDetails?.horarioDisponibleInicio,
+          horarioDisponibleFin: userDetails?.horarioDisponibleFin,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert('Perfil actualizado con éxito.');
+      } else {
+        alert('Error al actualizar el perfil.');
+      }
+    } catch (error) {
+      console.error('Error al actualizar el perfil:', error);
+      alert('Error al actualizar el perfil.');
+    }
   };
 
   const renderRating = (rating) => {
@@ -97,7 +115,11 @@ export default function UserProfile() {
   };
 
   if (message) {
-    return <div className={styles.messageContainer}><p>{message}</p></div>;
+    return (
+      <div className={styles.messageContainer}>
+        <p>{message}</p>
+      </div>
+    );
   }
 
   return (
@@ -107,12 +129,13 @@ export default function UserProfile() {
       <div className={styles.mainContent}>
         <div className={styles.coverPhotoContainer}>
           <img
-            src={newCoverPhoto ? newCoverPhoto : '/images/default-cover.jpg'}
+            src={newCoverPhoto ? newCoverPhoto : '/images/perfil/portada.jpg'}
             alt="Foto de Portada"
             className={styles.coverPhoto}
           />
-          <label htmlFor="coverInput" className={styles.coverInputLabel}>⬆️</label>
-          <input type="file" id="coverInput" onChange={handleCoverPhotoChange} className={styles.coverInput} />
+          <div className={styles.centeredInputContainer}>
+            <input type="file" onChange={(e) => handleCoverPhotoChange(e)} className={styles.fileInput} />
+          </div>
         </div>
 
         <div className={styles.centeredProfileContainer}>
@@ -125,66 +148,82 @@ export default function UserProfile() {
                       src={
                         newProfilePicture
                           ? newProfilePicture
-                          : userDetails.fotoPerfil || '/images/default-profile.png'
+                          : '/images/perfil/perfil.png'
                       }
                       alt="Foto de Perfil"
                       className={styles.profileImage}
                     />
-                    <label htmlFor="fileInput" className={styles.fileInputLabel}>⬆️</label>
-                    <input type="file" id="fileInput" onChange={handleProfilePictureChange} className={styles.fileInput} />
-                    <button onClick={handleProfilePictureUpload} className={styles.uploadButton}>Cambiar Foto</button>
-                    <h3 className={styles.profileName}>{`${userDetails.nombre.primerNombre} ${userDetails.nombre.primerApellido}`}</h3>
+                    <div className={styles.centeredInputContainer}>
+                      <input type="file" onChange={(e) => handleProfilePictureChange(e)} className={styles.fileInput} />
+                    </div>
                   </div>
+                  <h3 className={styles.profileName}>
+                    {`${userDetails.nombre.primerNombre} ${userDetails.nombre.primerApellido}`} {userDetails.rol.rol === 'tutor' ? '👩‍🏫' : '🎓'}
+                  </h3>
                 </div>
 
                 <div className={styles.profileDetailsContainer}>
                   <h2>Información básica:</h2>
                   <div className={styles.profileDetails}>
-                    <div className={styles.profileDetailContainer}>
-                      <label>Nombre</label>
-                      <input type="text" value={userDetails.nombre.primerNombre} onChange={(e) => handleFieldEdit('nombre.primerNombre', e.target.value)} />
-                      <label className={styles.editButtonLabel}>⬆️</label>
-                    </div>
-                    <div className={styles.profileDetailContainer}>
-                      <label>Apellido</label>
-                      <input type="text" value={userDetails.nombre.primerApellido} onChange={(e) => handleFieldEdit('nombre.primerApellido', e.target.value)} />
-                      <label className={styles.editButtonLabel}>⬆️</label>
-                    </div>
-                    <div className={styles.profileDetailContainer}>
-                      <label>Correo:</label>
-                      <p>{userDetails.correo}</p>
-                    </div>
-                    <div className={styles.profileDetailContainer}>
-                      <label>DNI:</label>
-                      <p>{userDetails.dni}</p>
-                    </div>
-                    <div className={styles.profileDetailContainer}>
-                      <label>Edad</label>
-                      <input type="number" value={userDetails.edad} onChange={(e) => handleFieldEdit('edad', e.target.value)} />
-                      <label className={styles.editButtonLabel}>⬆️</label>
-                    </div>
-                    <div className={styles.profileDetailContainer}>
-                      <label>Teléfono:</label>
-                      <input type="tel" value={userDetails.telefono} onChange={(e) => handleFieldEdit('telefono', e.target.value)} />
-                      <label className={styles.editButtonLabel}>⬆️</label>
-                    </div>
-                    <div className={styles.profileDetailContainer}>
-                      <label>Horario Disponible:</label>
-                      <input type="time" value={new Date(userDetails.horarioDisponibleInicio).toISOString().substr(11, 5)} onChange={(e) => handleFieldEdit('horarioDisponibleInicio', e.target.value)} />
-                      <label className={styles.editButtonLabel}>⬆️</label>
-                      <input type="time" value={new Date(userDetails.horarioDisponibleFin).toISOString().substr(11, 5)} onChange={(e) => handleFieldEdit('horarioDisponibleFin', e.target.value)} />
-                      <label className={styles.editButtonLabel}>⬆️</label>
-                    </div>
-                    <div className={styles.profileDetailContainer}>
-                      <label>Valoración:</label>
-                      <p>{renderRating(userDetails.valoracion)}</p>
-                    </div>
+                    <label>Nombre</label>
+                    <input
+                      type="text"
+                      value={userDetails.nombre.primerNombre}
+                      onChange={(e) =>
+                        handleFieldEdit('nombre.primerNombre', e.target.value)
+                      }
+                    />
+                    <label>Apellido</label>
+                    <input
+                      type="text"
+                      value={userDetails.nombre.primerApellido}
+                      onChange={(e) =>
+                        handleFieldEdit('nombre.primerApellido', e.target.value)
+                      }
+                    />
+                    <label>Edad</label>
+                    <input
+                      type="number"
+                      value={userDetails.edad}
+                      onChange={(e) => handleFieldEdit('edad', e.target.value)}
+                    />
+                    <label>Teléfono</label>
+                    <input
+                      type="tel"
+                      value={userDetails.telefono}
+                      onChange={(e) => handleFieldEdit('telefono', e.target.value)}
+                    />
+                    <label>Horario Disponible</label>
+                    <input
+                      type="time"
+                      value={new Date(userDetails.horarioDisponibleInicio)
+                        .toISOString()
+                        .substr(11, 5)}
+                      onChange={(e) =>
+                        handleFieldEdit(
+                          'horarioDisponibleInicio',
+                          e.target.value
+                        )
+                      }
+                    />
+                    <input
+                      type="time"
+                      value={new Date(userDetails.horarioDisponibleFin)
+                        .toISOString()
+                        .substr(11, 5)}
+                      onChange={(e) =>
+                        handleFieldEdit('horarioDisponibleFin', e.target.value)
+                      }
+                    />
+                    <button onClick={handleProfileUpdate} className={styles.saveButton}>
+                      Guardar Información
+                    </button>
                   </div>
                 </div>
 
                 {userDetails.rol.rol === 'tutor' && (
                   <div className={styles.commentsSection}>
-                    <h2>Comentarios de Referencia:</h2>
+                    <h2>Valoración: {renderRating(userDetails.valoracion)}</h2>
                     <div className={styles.commentInputContainer}>
                       <textarea
                         value={newComment}
@@ -202,7 +241,12 @@ export default function UserProfile() {
                           onChange={(e) => setRating(Number(e.target.value))}
                         />
                       </div>
-                      <button onClick={handleCommentSubmit} className={styles.submitCommentButton}>Añadir Comentario</button>
+                      <button
+                        onClick={handleCommentSubmit}
+                        className={styles.submitCommentButton}
+                      >
+                        Añadir Comentario
+                      </button>
                     </div>
                     <div className={styles.commentsList}>
                       {comments.map((comment, index) => (
@@ -226,4 +270,3 @@ export default function UserProfile() {
     </div>
   );
 }
-

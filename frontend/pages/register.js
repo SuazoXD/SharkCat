@@ -55,12 +55,12 @@ export default function Register() {
   const validateFirstStep = () => {
     let errors = {};
 
-    if (!formData.primerNombre.trim()) errors.primerNombre = 'El primer nombre es obligatorio';
-    if (!formData.primerApellido.trim()) errors.primerApellido = 'El primer apellido es obligatorio';
-    if (!formData.correo) errors.correo = 'El correo es obligatorio';
+    if (!formData.primerNombre.trim()) errors.primerNombre = 'Llena este campo';
+    if (!formData.primerApellido.trim()) errors.primerApellido = 'Llena este campo';
+    if (!formData.correo.trim()) errors.correo = 'Llena este campo';
 
     setErrors(errors);
-    return Object.keys(errors).length === 0;
+    return Object.keys(errors).length === 0; // Si no hay errores, devolver true
   };
 
   // Validación del segundo paso (contraseñas)
@@ -80,13 +80,28 @@ export default function Register() {
     return Object.keys(errors).length === 0;
   };
 
+  // Validación del tercer paso (información adicional)
+  const validateThirdStep = () => {
+    let errors = {};
+
+    if (!formData.edad || isNaN(formData.edad)) errors.edad = 'Ingresa una edad válida';
+    if (!formData.dni.trim()) errors.dni = 'Llena este campo';
+    if (!formData.telefono.trim()) errors.telefono = 'Llena este campo';
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleNextStep = (e) => {
     e.preventDefault();
 
     if (step === 1 && validateFirstStep()) {
+      // Cambiar a step 2 si la validación del primer paso es exitosa
       setStep(2);
     } else if (step === 2 && validateSecondStep()) {
       setStep(3);
+    } else if (step === 3 && validateThirdStep()) {
+      handleSubmit(e);
     } else {
       setShowPopup(true);
     }
@@ -97,9 +112,19 @@ export default function Register() {
     e.preventDefault();
 
     const dataToSend = {
-      ...formData,
+      primerNombre: formData.primerNombre,
+      segundoNombre: formData.segundoNombre,
+      primerApellido: formData.primerApellido,
+      segundoApellido: formData.segundoApellido,
+      correo: formData.correo,
+      contrasenia: formData.contrasenia,
+      edad: Number(formData.edad), // Asegúrate de enviar la edad como número
+      dni: formData.dni,
+      telefono: formData.telefono,
       idRol: Number(formData.idRol),
-      edad: Number(formData.edad),
+      valoracion: formData.valoracion, // si es requerido por el backend
+      horarioDiponibleInicio: formData.horarioDiponibleInicio, // si es requerido
+      horarioDisponibleFin: formData.horarioDisponibleFin, // si es requerido
     };
 
     try {
@@ -108,9 +133,10 @@ export default function Register() {
       setShowPopup(true);
       setStep(4); // Ir al paso de validación del código
     } catch (error) {
+      // Mostrar el error detallado en la consola
+      console.error('Error en el registro:', error.response ? error.response.data : error);
       setMessage('Error en el registro. Inténtalo de nuevo.');
       setShowPopup(true);
-      setRedirectToLogin(false);
     }
   };
 
@@ -150,7 +176,7 @@ export default function Register() {
       <div className={styles.container}>
         {step === 1 && (
           <div className={styles.registerBox}>
-             <h1 className={styles.sharkCatTitle}>SharkCat</h1>
+            <h1 className={styles.sharkCatTitle}>SharkCat</h1>
             <a href="/" className={styles.homeButton}>
               <img src="/images/home-icon.png" alt="Home" className={styles.homeIcon} />
             </a>
@@ -165,7 +191,6 @@ export default function Register() {
                     placeholder="Primer Nombre"
                     value={formData.primerNombre}
                     onChange={(e) => setFormData({ ...formData, primerNombre: e.target.value })}
-                    required
                     className={styles.input}
                   />
                   {errors.primerNombre && <span className={styles.error}>{errors.primerNombre}</span>}
@@ -189,7 +214,6 @@ export default function Register() {
                     placeholder="Primer Apellido"
                     value={formData.primerApellido}
                     onChange={(e) => setFormData({ ...formData, primerApellido: e.target.value })}
-                    required
                     className={styles.input}
                   />
                   {errors.primerApellido && <span className={styles.error}>{errors.primerApellido}</span>}
@@ -211,14 +235,12 @@ export default function Register() {
                 placeholder="Correo Electrónico"
                 value={formData.correo}
                 onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
-                required
                 className={styles.input}
               />
               {errors.correo && <span className={styles.error}>{errors.correo}</span>}
 
               <button type="submit" className={styles.button}>Continuar</button>
             </form>
-
           </div>
         )}
 
@@ -237,7 +259,6 @@ export default function Register() {
                   placeholder="Contraseña"
                   value={formData.contrasenia}
                   onChange={(e) => setFormData({ ...formData, contrasenia: e.target.value })}
-                  required
                   className={styles.input}
                 />
                 <button
@@ -260,7 +281,6 @@ export default function Register() {
                   placeholder="Verificar Contraseña"
                   value={formData.confirmarContrasenia}
                   onChange={(e) => setFormData({ ...formData, confirmarContrasenia: e.target.value })}
-                  required
                   className={styles.input}
                 />
                 <button
@@ -290,15 +310,16 @@ export default function Register() {
             </a>
             <img src="/images/Register.png" alt="SharkCat Logo" className={styles.logoImage} />
             <h2 className={styles.title}>Información Adicional</h2>
-            <form onSubmit={handleSubmit} className={styles.form}>
+            <form onSubmit={handleNextStep} className={styles.form}>
               <input
                 type="number"
                 placeholder="Edad"
                 value={formData.edad}
                 onChange={(e) => setFormData({ ...formData, edad: e.target.value })}
-                required
                 className={styles.input}
               />
+              {errors.edad && <span className={styles.error}>{errors.edad}</span>}
+
               <input
                 type="text"
                 placeholder="DNI"
@@ -306,6 +327,8 @@ export default function Register() {
                 onChange={(e) => setFormData({ ...formData, dni: e.target.value })}
                 className={styles.input}
               />
+              {errors.dni && <span className={styles.error}>{errors.dni}</span>}
+
               <input
                 type="tel"
                 placeholder="Número de Teléfono"
@@ -313,6 +336,7 @@ export default function Register() {
                 onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
                 className={styles.input}
               />
+              {errors.telefono && <span className={styles.error}>{errors.telefono}</span>}
 
               <label className={styles.label}>¿Eres Pupilo o Tutor?</label>
               <div className={styles.radioGroup}>
@@ -352,7 +376,6 @@ export default function Register() {
                 placeholder="Inserte código de verificación"
                 value={formData.codigoVerificacion}
                 onChange={(e) => setFormData({ ...formData, codigoVerificacion: e.target.value })}
-                required
                 className={styles.input}
               />
               <button type="submit" className={styles.button}>Validar</button>

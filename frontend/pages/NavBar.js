@@ -60,7 +60,7 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         <div className={styles.logoSection}>
           <Image 
-            src="/images/logo.png"
+            src="/images/logo2.png"
             alt="Logo de SharkCat"
             width={50}
             height={50}
@@ -71,7 +71,7 @@ export default function Navbar() {
           <div className={styles.dropdown}>
             <button className={styles.dropdownButton}>
               <Image 
-                src="/images/logo.png"
+                src="/images/categorias.png"
                 alt="Categorías"
                 width={20}
                 height={20}
@@ -114,7 +114,7 @@ export default function Navbar() {
         <div className={styles.navSearch}>
           <input type="text" placeholder="Buscar" className={styles.searchInput} />
           <button className={styles.searchButton}>
-            <Image src="/images/Logo.png" alt="Buscar" width={16} height={16} />
+            <Image src="/images/Buscar.png" alt="Buscar" width={16} height={16} />
           </button>
         </div>
 
@@ -126,12 +126,12 @@ export default function Navbar() {
                 {/* Botón de Perfil con menú desplegable */}
                 <div className={styles.profileDropdown}>
                   <button className={styles.authButton} onClick={toggleMenu}>
-                    <Image src="/images/logo.png" alt="Perfil" width={20} height={20} />
+                    <Image src="/images/user.png" alt="Perfil" width={20} height={20} />
                     Perfil
                   </button>
                   {menuVisible && (
                     <div className={styles.profileMenu}>
-                      <Link href="/userdata">Información Personal</Link>
+                      <Link href="/UserProfile">Información Personal</Link>
                       <Link href="/ChangePassword">Cambio de Contraseña</Link>
                       <button onClick={handleLogout}>Cerrar Sesión</button>
                     </div>
@@ -141,7 +141,7 @@ export default function Navbar() {
               <li>
                 <Link href="/UserHome">
                   <button className={styles.authButton}>
-                    <Image src="/images/logo.png" alt="Página Principal" width={20} height={20} />
+                    <Image src="/images/home.png" alt="Página Principal" width={20} height={20} />
                     Página Principal
                   </button>
                 </Link>
@@ -152,7 +152,7 @@ export default function Navbar() {
               <li>
                 <Link href="http://localhost:3001/login">
                   <button className={styles.authButton}>
-                    <Image src="/images/logo.png" alt="Iniciar Sesión" width={20} height={20} />
+                    <Image src="/images/iniciar.png" alt="Iniciar Sesión" width={20} height={20} />
                     Iniciar Sesión
                   </button>
                 </Link>
@@ -160,7 +160,7 @@ export default function Navbar() {
               <li>
                 <Link href="http://localhost:3001/register">
                   <button className={styles.authButton}>
-                    <Image src="/images/logo.png" alt="Registrarse" width={20} height={20} />
+                    <Image src="/images/registe.png" alt="Registrarse" width={20} height={20} />
                     Registrarse
                   </button>
                 </Link>
